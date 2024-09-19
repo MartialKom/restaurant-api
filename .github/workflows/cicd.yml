@@ -1,0 +1,57 @@
+
+name: CICD_RESTAURANT
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "master" branch
+  push:
+    branches:
+      - main
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+
+      # Runs a set of commands using the runners shell
+      - name: setup jdk 21
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'corretto'
+          java-version: '21'
+
+      - name: build the app
+        run: |
+          mvn clean
+          mvn -B package --file pom.xml
+          ls -l target
+
+      - name: Copy JAR to Remote Server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          source: "target/restaurant-0.0.1.jar"
+          target: "/opt/martial"
+
+      - name: SSH into Remote Server and Build Docker Image
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          script: |
+            cd /opt/martial
+            docker stop api-restaurant
+            docker rm api-restaurant
+            docker rmi -f restaurant:V1
+            docker build -t restaurant:V1 .
+            docker run -p 8001:8000 --network martial -d -v /opt/martial/config:/opt/martial/config --name api-restaurant restaurant:V1

@@ -110,7 +110,7 @@ public class RestaurantServiceImpl implements IRestaurantService {
     @Override
     public RestaurantDto findByNameAndLogin(RestaurantLogin restaurantLogin) {
         return RestaurantDto.fromEntity(restaurantRepository.findByNameAndLogin(restaurantLogin.getRestaurantName(), restaurantLogin.getRestaurantLogin()).orElseThrow(
-                () -> new EntityNotFoundException("aucun restaurant trouvé")
+                () -> new EntityNotFoundException("Paramètres de connexion incorrects")
         ));
     }
 
