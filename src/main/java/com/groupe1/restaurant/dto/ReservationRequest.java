@@ -32,7 +32,7 @@ public class ReservationRequest {
     @Min(value = 1, message = "Il faut au moins reserver pour une personne")
     private int nbOfPeople;
 
-    @NotEmpty(message = "Le nom du client est requis")
+    @NotEmpty(message = "Le nom du client est obligatoire")
     private String clientName;
 
     public static Reservation toEntity(ReservationRequest request) {
