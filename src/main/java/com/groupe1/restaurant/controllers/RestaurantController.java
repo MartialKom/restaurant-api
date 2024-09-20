@@ -100,5 +100,13 @@ public class RestaurantController {
         );
     }
 
+    @GetMapping("/")
+    public ResponseEntity<BaseResponse<List<RestaurantDto>>> getAll(){
+        return ResponseEntity.status(HttpStatus.OK.value()).body(
+                new BaseResponse<>(HttpStatus.OK.value(), "Liste des restaurants", restaurantService.findAll())
+        );
+    }
+
+
 
 }

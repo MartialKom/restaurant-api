@@ -9,6 +9,8 @@ import java.util.List;
 public interface IRestaurantService {
 
     RestaurantDto create(RestaurantRequest request);
+
+    List<RestaurantDto> findAll();
     RestaurantDto update(Integer id, RestaurantRequest request);
     RestaurantDto getRestaurantById(Integer id);
     List<RestaurantDto> findAllOpenByCity(String city, String time);

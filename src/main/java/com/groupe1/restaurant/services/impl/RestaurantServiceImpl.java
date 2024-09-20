@@ -47,6 +47,11 @@ public class RestaurantServiceImpl implements IRestaurantService {
     }
 
     @Override
+    public List<RestaurantDto> findAll() {
+        return restaurantRepository.findAll().stream().map(RestaurantDto::fromEntity).toList();
+    }
+
+    @Override
     public RestaurantDto update(Integer id, RestaurantRequest request) {
         validators.validate(request);
 
