@@ -15,4 +15,6 @@ public interface MenuRepository extends JpaRepository<Menu, Integer> {
     List<Menu> findAllByRestaurant(Restaurant restaurant);
 
     List<Menu> findByDaysAndRestaurant(EnumDays days, Restaurant restaurant);
+
+    void deleteByRestaurantAndDays(Restaurant restaurant, EnumDays days);
 }

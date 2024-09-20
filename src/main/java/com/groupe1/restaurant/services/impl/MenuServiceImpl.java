@@ -44,6 +44,7 @@ public class MenuServiceImpl implements IMenuService {
 
         Restaurant restaurant = restaurantRepository.findById(request.getRestaurantId()).orElseThrow(() -> new EntityNotFoundException(RESTAURANT_NON_TROUVE));
         Menu menu = MenuRequest.toEntity(request);
+        menuRepository.deleteByRestaurantAndDays(restaurant, menu.getDays());
         List<Dish> dishes =  dishRepository.saveAll(menu.getDishes());
         menu.setRestaurant(restaurant);
         menu.setDishes(dishes);
