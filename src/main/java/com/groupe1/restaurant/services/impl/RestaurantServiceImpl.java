@@ -5,6 +5,7 @@ import com.groupe1.restaurant.dto.RestaurantLogin;
 import com.groupe1.restaurant.dto.RestaurantRequest;
 import com.groupe1.restaurant.entities.EnumRestaurantType;
 import com.groupe1.restaurant.entities.Restaurant;
+import com.groupe1.restaurant.exception.OperationNonPermittedException;
 import com.groupe1.restaurant.repository.RestaurantRepository;
 import com.groupe1.restaurant.services.IRestaurantService;
 import com.groupe1.restaurant.utils.RestaurantLoginGenerator;
@@ -48,10 +49,16 @@ public class RestaurantServiceImpl implements IRestaurantService {
     @Override
     public RestaurantDto update(Integer id, RestaurantRequest request) {
         validators.validate(request);
+
+
+        if(!request.getClosingHours().isAfter(request.getOpeningHours()))
+            throw new OperationNonPermittedException("L'heure de fermeture doit être après l'heure d'ouverture");
+
         Restaurant restaurant = restaurantRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Restaurant non trouvé"));
 
         restaurant.setName(request.getName());
         restaurant.setDescription(request.getDescription());
+        restaurant.setAddress(request.getAddress());
         restaurant.setCity(request.getCity());
         restaurant.setPhone(request.getPhone());
         restaurant.setOpeningHours(request.getOpeningHours());
